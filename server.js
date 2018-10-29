@@ -42,8 +42,16 @@ app.get('/users/:id', (req, res) => {
   }
 })
 
-app.post('/users/:id', (req, res) => {
-  
+app.put('/users/:id/:field/:change', (req, res) => {
+  let data = JSON.parse(fs.readFileSync('./storage.json', 'utf8'));
+  let {id, field, change} = req.params;
+  for(let i = 0; i < data.users.length; i++) {
+    if(data.users[i].id === Number(id)){
+      data.users[i][field] = change;
+      fs.writeFileSync('./storage.json', JSON.stringify(data));
+      res.send('Updated')
+    }
+  }
 })
 
 app.delete('/users/:id', (req, res) => {
@@ -64,10 +72,6 @@ app.delete('/users/:id', (req, res) => {
     res.sendStatus(400)
   }
 })
-
-app.get('/yourroute', function(req, res) {
-  res.send("stuff");
-});
 
 app.use(function(req, res) {
   res.sendStatus(404);
